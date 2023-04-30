@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public StorkController Stork;
 
+    public List<CustomAgent> Agents;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,16 +19,30 @@ public class GameManager : MonoBehaviour
         UI.Init(this);
 
         Stork.Init(this);
+        foreach (var agent in Agents)
+        {
+            agent.Init(this);
+        }
+
+        PauseGame();
     }
 
     public void PauseGame()
     {
         Stork.Pause();
+        foreach (var agent in Agents)
+        {
+            agent.Pause();
+        }
     }
 
     public void ResumeGame()
     {
         Stork.Resume();
+        foreach (var agent in Agents)
+        {
+            agent.Resume();
+        }
     }
 
 }
