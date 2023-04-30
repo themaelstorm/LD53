@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CustomBehaviour : MonoBehaviour
 {
-    private GameManager _gameManager;
+    [SerializeField] protected GameManager _gameManager;
 
     public virtual void Init(GameManager gameManager)
     {

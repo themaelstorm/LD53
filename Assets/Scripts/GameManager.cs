@@ -7,11 +7,26 @@ public class GameManager : MonoBehaviour
     public UIManager UI;
     public EventManager Events;
 
+
+    public StorkController Stork;
+
     // Start is called before the first frame update
     void Start()
     {
         Events.Init(this);
         UI.Init(this);
+
+        Stork.Init(this);
+    }
+
+    public void PauseGame()
+    {
+        Stork.Pause();
+    }
+
+    public void ResumeGame()
+    {
+        Stork.Resume();
     }
 
 }
