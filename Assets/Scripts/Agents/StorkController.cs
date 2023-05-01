@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -16,14 +17,25 @@ public class StorkController : CustomAgent
     [SerializeField] private bool _isTurning;
     [SerializeField] private float _rotateAmount;
 
+    [SerializeField] private float _cameraToPlayerDistance;
+
 
     public override void Init(GameManager gameManager)
     {
         base.Init(gameManager);
+
+        _gameManager.Events.OnLevelLoaded += ResetPlayer;
         
         if (_lineRenderer == null)
             _lineRenderer = GetComponent<LineRenderer>();
 
+        _cameraToPlayerDistance = _camera.transform.position.y - transform.position.y;
+        _isMoving = false;
+    }
+
+    private void OnDestroy()
+    {
+        _gameManager.Events.OnLevelLoaded -= ResetPlayer;
     }
 
     private void FixedUpdate()
@@ -70,7 +82,7 @@ public class StorkController : CustomAgent
         */
         if (Input.GetMouseButton(0))
         {
-            Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 15f);
+            Vector3 mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, _cameraToPlayerDistance);
             
             Vector3 mousePosition = _camera.ScreenToWorldPoint(mousePos);
 
@@ -98,7 +110,7 @@ public class StorkController : CustomAgent
         var pointList = new List<Vector3>();
 
         Vector3 point1 = transform.position;
-        Vector3 point2 = transform.position + (transform.forward * 3f);
+        Vector3 point2 = transform.position + (transform.forward * 5f);
         Vector3 point3 = target;
 
         //Debug.Log(point3 + " " + point2 + " " + point1);
@@ -114,6 +126,17 @@ public class StorkController : CustomAgent
 
         _lineRenderer.positionCount = pointList.Count;
         _lineRenderer.SetPositions(pointList.ToArray());
+    }
+
+    public void ResetPlayer()
+    {
+        UpdateComponents();
+
+        _oldAngularVelocity = Vector3.zero;
+        _oldVelocity = Vector3.zero;
+        _isMoving = true;
+        Pause();
+
     }
 
 }

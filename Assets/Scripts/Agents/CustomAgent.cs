@@ -34,21 +34,37 @@ public class CustomAgent : CustomBehaviour
 
     public virtual void Pause()
     {
-        _oldVelocity = _rigidbody.velocity;
-        _oldAngularVelocity = _rigidbody.angularVelocity;
-        _rigidbody.Sleep();
+        if (!_isMoving) return;
+        if (_rigidbody != null)
+        {
+            _oldVelocity = _rigidbody.velocity;
+            _oldAngularVelocity = _rigidbody.angularVelocity;
+            _rigidbody.Sleep();
+        }
+        if (_animator != null)
+        {
+            _animator.speed = 0f;
+        }
 
-        _animator.speed = 0f;
         _isMoving = false;
     }
 
     public virtual void Resume()
     {
-        _rigidbody.WakeUp();
-        _rigidbody.velocity = _oldVelocity;
-        _rigidbody.angularVelocity = _oldAngularVelocity;
+        if (_isMoving) return;
 
-        _animator.speed = 1f;
+        if (_rigidbody!= null)
+        {
+            _rigidbody.WakeUp();
+            _rigidbody.velocity = _oldVelocity;
+            _rigidbody.angularVelocity = _oldAngularVelocity;
+        }
+
+        if(_animator != null)
+        {
+            _animator.speed = 1f;
+        }
+        
         _isMoving = true;
     }
 }
