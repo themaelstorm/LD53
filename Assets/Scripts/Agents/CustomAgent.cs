@@ -34,6 +34,7 @@ public class CustomAgent : CustomBehaviour
 
     public virtual void Pause()
     {
+        if (!_isMoving) return;
         if (_rigidbody != null)
         {
             _oldVelocity = _rigidbody.velocity;
@@ -50,6 +51,8 @@ public class CustomAgent : CustomBehaviour
 
     public virtual void Resume()
     {
+        if (_isMoving) return;
+
         if (_rigidbody!= null)
         {
             _rigidbody.WakeUp();

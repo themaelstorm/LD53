@@ -49,7 +49,7 @@ public class TurretAgent : CustomAgent
         bullet.transform.position = Muzzle.position + Muzzle.forward;
         bullet.transform.rotation = neededRotation;
         bullet.Init(_gameManager);
-        _gameManager.Agents.Add(bullet);
+        _gameManager.Levels.AddAgent(bullet);
         
     }
 

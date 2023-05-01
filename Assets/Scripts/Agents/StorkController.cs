@@ -23,12 +23,19 @@ public class StorkController : CustomAgent
     public override void Init(GameManager gameManager)
     {
         base.Init(gameManager);
+
+        _gameManager.Events.OnLevelLoaded += ResetPlayer;
         
         if (_lineRenderer == null)
             _lineRenderer = GetComponent<LineRenderer>();
 
         _cameraToPlayerDistance = _camera.transform.position.y - transform.position.y;
+        _isMoving = false;
+    }
 
+    private void OnDestroy()
+    {
+        _gameManager.Events.OnLevelLoaded -= ResetPlayer;
     }
 
     private void FixedUpdate()
@@ -119,6 +126,17 @@ public class StorkController : CustomAgent
 
         _lineRenderer.positionCount = pointList.Count;
         _lineRenderer.SetPositions(pointList.ToArray());
+    }
+
+    public void ResetPlayer()
+    {
+        UpdateComponents();
+
+        _oldAngularVelocity = Vector3.zero;
+        _oldVelocity = Vector3.zero;
+        _isMoving = true;
+        Pause();
+
     }
 
 }

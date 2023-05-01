@@ -11,6 +11,7 @@ public class BulletAgent : CustomAgent
         base.Init(gameManager);
 
         _rigidbody.velocity = transform.forward * _speed;
+        _isMoving = true;
     }
 
     private void Update()
@@ -23,8 +24,7 @@ public class BulletAgent : CustomAgent
 
     private void ResetMe()
     {
-        if (_gameManager.Agents.Contains(this))
-            _gameManager.Agents.Remove(this);
+        _gameManager.Levels.RemoveAgent(this);
 
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
@@ -34,6 +34,11 @@ public class BulletAgent : CustomAgent
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.transform.tag == "Player")
+        {
+            _gameManager.Events.HitPlayer();
+        }
+
         ResetMe();
     }
 
