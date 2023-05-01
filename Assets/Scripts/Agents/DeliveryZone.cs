@@ -1,15 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
-public class DeliveryZone : CustomBehaviour
+public class DeliveryZone : CustomAgent
 {
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
-            _gameManager.Events.DeliverBaby();
+            _gameManager.Events.DeliverBaby(transform.position);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Respawn") //babypod
+        {
+            Destroy(other.gameObject);
+            Destroy(gameObject);
         }
     }
 }

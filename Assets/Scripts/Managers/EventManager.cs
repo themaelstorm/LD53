@@ -13,13 +13,7 @@ public class EventManager : CustomBehaviour
     public event Action OnGameResumed;
 
     public event Action OnCreditsShown;
-    public event Action OnCreditsHide;
-
-    public event Action OnInstructionsShown;
-    public event Action OnInstructionsHide;
-
     public event Action OnUpgradePanelShown;
-    public event Action OnUpgradePanelHide;
 
     public event Action OnNewGameStarted;
     public event Action OnLevelLoaded;
@@ -29,7 +23,7 @@ public class EventManager : CustomBehaviour
 
     public event Action<int> OnPlayerHit;
     public event Action OnPlayerKilled;
-    public event Action OnBabyDelivered;
+    public event Action<Vector3> OnBabyDelivered;
     public event Action<int> OnUseSkill;
 
     public event Action OnUpgradeHealth;
@@ -63,21 +57,6 @@ public class EventManager : CustomBehaviour
     public void ShowCredits()
     {
         OnCreditsShown?.Invoke();
-    }
-
-    public void HideCredits()
-    {
-        OnCreditsHide?.Invoke();
-    }
-
-    public void ShowInstructions()
-    {
-        OnInstructionsShown?.Invoke();
-    }
-
-    public void HideInstructions()
-    {
-        OnInstructionsHide?.Invoke();
     }
 
     public void StartNewGame()
@@ -115,9 +94,9 @@ public class EventManager : CustomBehaviour
         OnPlayerKilled?.Invoke();
     }
 
-    public void DeliverBaby()
+    public void DeliverBaby(Vector3 target)
     {
-        OnBabyDelivered?.Invoke();
+        OnBabyDelivered?.Invoke(target);
     }
 
     public void UseSkill(int skillID)
@@ -148,11 +127,6 @@ public class EventManager : CustomBehaviour
     public void ShowUpgradePanel()
     {
         OnUpgradePanelShown?.Invoke();  
-    }
-
-    public void HideUpgradePanel()
-    {
-        OnUpgradePanelHide?.Invoke();
     }
 
     public void UpdatePlayerStats()

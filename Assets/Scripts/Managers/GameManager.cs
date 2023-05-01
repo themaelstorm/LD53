@@ -25,16 +25,5 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void PauseGame()
-    {
-        Stork.Pause();
-        Levels.Pause();
-    }
-
-    public void ResumeGame()
-    {
-        Stork.Resume();
-        Levels.Resume();
-    }
 
 }

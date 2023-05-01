@@ -19,19 +19,25 @@ public class UpgradePanel : UIPanel
     public override void Init(GameManager gameManager)
     {
         base.Init(gameManager);
+        _gameManager.Events.OnUpgradePanelShown += ShowPanel;
         _gameManager.Events.OnPlayerStatsChanged += UpdateStats;
 
-        _upgradePointsLeft = _upgradePointsMax;
-
-        _pointsText.text = _upgradePointsLeft.ToString();
-        _healthText.text = _gameManager.Stork.MaxHealth.ToString();
-        _armorText.text = _gameManager.Stork.Armor.ToString();
-        _speedText.text = _gameManager.Stork.Speed.ToString();
     }
 
     private void OnDestroy()
     {
+        _gameManager.Events.OnUpgradePanelShown -= ShowPanel;
         _gameManager.Events.OnPlayerStatsChanged -= UpdateStats;
+    }
+
+    public override void ShowPanel()
+    {
+        base.ShowPanel();
+        _upgradePointsLeft = _upgradePointsMax;
+        _pointsText.text = _upgradePointsLeft.ToString();
+        _healthText.text = _gameManager.Stork.MaxHealth.ToString();
+        _armorText.text = _gameManager.Stork.Armor.ToString();
+        _speedText.text = _gameManager.Stork.Speed.ToString();
     }
 
     private void UpdateStats()
@@ -46,11 +52,11 @@ public class UpgradePanel : UIPanel
     {
         if (_upgradePointsLeft > 0)
         {
-            _gameManager.Events.GainSkill(upgradeID);
             _upgradePointsLeft -= 1;
+            _pointsText.text = _upgradePointsLeft.ToString();
+            _gameManager.Events.GainSkill(upgradeID);
         }
     }
-
 
     public void PlayNextLevel()
     {

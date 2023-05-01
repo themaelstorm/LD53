@@ -1,10 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Level : CustomBehaviour
 {
     public List<CustomAgent> Agents;
+    public int BabyDeliveryCount;
+    public int DeliveryMade;
 
     public override void Init(GameManager gameManager)
     {
@@ -15,23 +16,20 @@ public class Level : CustomBehaviour
             agent.Init(_gameManager);
         }
 
-
+        _gameManager.Events.OnBabyDelivered += BabyDelivered;
     }
 
-    public void Pause()
+    private void OnDestroy()
     {
-        foreach (var agent in Agents)
-        {
-            agent.Pause();
-        }
+        _gameManager.Events.OnBabyDelivered -= BabyDelivered;
     }
 
-    public void Resume()
+    private void BabyDelivered(Vector3 t)
     {
+        DeliveryMade++;
+        _gameManager.Events.UpdatePlayerStats();
 
-        foreach (var agent in Agents)
-        {
-            agent.Resume();
-        }
+        if (DeliveryMade == BabyDeliveryCount)
+            _gameManager.Events.CompleteLevel();
     }
 }

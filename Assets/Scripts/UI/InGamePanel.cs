@@ -20,13 +20,7 @@ public class InGamePanel : UIPanel
         _gameManager.Events.OnLevelFailed += HidePanel;
         _gameManager.Events.OnLevelCompleted += HidePanel;
 
-        _gameManager.Events.OnPlayerStatsChanged -= UpdateText;
-        _gameManager.Events.OnBabyDelivered -= UpdateText;
-
-        _isPaused = true;
-        _actionButtonText.text = "Resume";
-
-        UpdateText();
+        _gameManager.Events.OnPlayerStatsChanged += UpdateStats;
     }
 
     private void OnDestroy()
@@ -35,15 +29,26 @@ public class InGamePanel : UIPanel
         _gameManager.Events.OnLevelFailed -= HidePanel;
         _gameManager.Events.OnLevelCompleted -= HidePanel;
 
-        _gameManager.Events.OnPlayerStatsChanged -= UpdateText;
-        _gameManager.Events.OnBabyDelivered -= UpdateText;
+        _gameManager.Events.OnPlayerStatsChanged -= UpdateStats;
+
     }
 
-    private void UpdateText()
+    public override void ShowPanel()
     {
-        _healthText.text = _gameManager.Stork.CurrentHealth.ToString() + " / " + _gameManager.Stork.MaxHealth.ToString();
-        _babyDeliverText.text = "0 / 0";
+        base.ShowPanel();
+        _isPaused = true;
+        _actionButtonText.text = "Resume";
+        UpdateStats();
     }
+
+    private void UpdateStats()
+    {
+        if (_gameManager.Stork != null)
+            _healthText.text = _gameManager.Stork.CurrentHealth.ToString() + " / " + _gameManager.Stork.MaxHealth.ToString();
+        if (_gameManager.Levels.CurrentLevel != null)
+            _babyDeliverText.text = _gameManager.Levels.CurrentLevel.DeliveryMade.ToString() + " / " + _gameManager.Levels.CurrentLevel.BabyDeliveryCount.ToString();
+    }
+
 
     public void PauseResume()
     {
@@ -51,24 +56,14 @@ public class InGamePanel : UIPanel
         {
             _actionButtonText.text = "Pause";
             _isPaused = false;
-            _gameManager.ResumeGame();
+            _gameManager.Events.ResumeGame();
         }
         else
         {
             _actionButtonText.text = "Resume";
             _isPaused = true;
-            _gameManager.PauseGame();
+            _gameManager.Events.PauseGame();
         }
-    }
-
-    public void Pause()
-    {
-        _gameManager.PauseGame();
-    }
-
-    public void Resume()
-    {
-        _gameManager.ResumeGame();
     }
 
 

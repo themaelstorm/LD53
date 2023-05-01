@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class TurretAgent : CustomAgent
@@ -50,7 +46,7 @@ public class TurretAgent : CustomAgent
         bullet.transform.position = Muzzle.position + Muzzle.forward;
         bullet.transform.rotation = neededRotation;
         bullet.Init(_gameManager);
-        _gameManager.Levels.AddAgent(bullet);
+        //_gameManager.Levels.AddAgent(bullet);
         
     }
 
@@ -59,6 +55,14 @@ public class TurretAgent : CustomAgent
         if (other.tag == "Player")
         {
             _target = other.transform;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            _target = null;
         }
     }
 }

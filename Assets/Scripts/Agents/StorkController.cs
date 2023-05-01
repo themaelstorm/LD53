@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -20,6 +17,8 @@ public class StorkController : CustomAgent
     [SerializeField] private float _cameraToPlayerDistance;
 
     [SerializeField] private int _maxHealth;
+
+    [SerializeField] private GameObject _podPrefab;
     public int MaxHealth
     {
         get
@@ -55,16 +54,28 @@ public class StorkController : CustomAgent
 
     [SerializeField] private float _speedFactor;
 
+    private Vector3 _initialPosition;
+    private Quaternion _initialRotation;
+    private Vector3 _initialCamPosition;
+    private Quaternion _initialCamRotation;
+
 
     public override void Init(GameManager gameManager)
     {
         base.Init(gameManager);
 
+        _initialCamPosition = _camera.transform.position;
+        _initialCamRotation = _camera.transform.rotation;
+        _initialRotation = transform.rotation;
+        _initialPosition = transform.position;
+
         _gameManager.Events.OnLevelLoaded += ResetPlayer;
         _gameManager.Events.OnPlayerHit += GotHit;
         _gameManager.Events.OnNewGameStarted += ResetStats;
         _gameManager.Events.OnGainSkill += GainSkill;
-        
+        _gameManager.Events.OnBabyDelivered += DeliverBaby;
+        _gameManager.Events.OnLevelCompleted += Pause;
+                
         if (_lineRenderer == null)
             _lineRenderer = GetComponent<LineRenderer>();
 
@@ -79,6 +90,16 @@ public class StorkController : CustomAgent
         _gameManager.Events.OnPlayerHit -= GotHit;
         _gameManager.Events.OnNewGameStarted -= ResetStats;
         _gameManager.Events.OnGainSkill -= GainSkill;
+        _gameManager.Events.OnBabyDelivered -= DeliverBaby;
+        _gameManager.Events.OnLevelCompleted -= Pause;
+    }
+
+    private void DeliverBaby(Vector3 target)
+    {
+        target.y = transform.position.y;
+        GameObject go = Instantiate(_podPrefab, target, Quaternion.identity);
+        Babypod babypod = go.GetComponent<Babypod>();
+        babypod.Init(_gameManager);
     }
 
     private void GainSkill(int skillID)
@@ -86,6 +107,7 @@ public class StorkController : CustomAgent
         if (skillID == 0) // health
         {
             _maxHealth += 5;
+            _currentHealth = _maxHealth;
         }
         else if (skillID == 1) // armor
         {
@@ -173,6 +195,14 @@ public class StorkController : CustomAgent
         _targetArrow.transform.rotation = Quaternion.Euler(Vector3.up * (rotateAmount));
     }
 
+    public override void Resume()
+    {
+        base.Resume();
+
+        _targetArrow.SetActive(false);
+        _lineRenderer.positionCount = 0;
+    }
+
     int vertexCount = 24;
 
     private void DrawLine(Vector3 target)
@@ -202,6 +232,11 @@ public class StorkController : CustomAgent
     {
         UpdateComponents();
 
+        transform.rotation = _initialRotation;
+        transform.position = _initialPosition;
+        _camera.transform.position = _initialCamPosition;
+        _camera.transform.rotation = _initialCamRotation;
+        
         _oldAngularVelocity = Vector3.zero;
         _oldVelocity = Vector3.zero;
         _isMoving = true;
@@ -211,12 +246,12 @@ public class StorkController : CustomAgent
 
     private void GotHit(int damage)
     {
-        float dmgReduction = 0.1f * _armor;
-        _currentHealth -= Mathf.Max((damage * _armor), 1);
+        float dmgReduction = 1f - (0.1f * _armor);
+        _currentHealth -= Mathf.Max((int)(damage * dmgReduction), 1);
         _gameManager.Events.UpdatePlayerStats();
 
         if (_currentHealth < 0)
-            _gameManager.Events.KillPlayer();
+            _gameManager.Events.FailLevel();
     }
 
 

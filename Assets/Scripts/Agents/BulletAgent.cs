@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class BulletAgent : CustomAgent
@@ -25,7 +24,7 @@ public class BulletAgent : CustomAgent
 
     private void ResetMe()
     {
-        _gameManager.Levels.RemoveAgent(this);
+        //_gameManager.Levels.RemoveAgent(this);
 
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;

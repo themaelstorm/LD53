@@ -1,14 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class LevelManager : CustomBehaviour
 {
     [SerializeField] private GameObject[] _levelPrefabs;
 
-    [SerializeField] private Level _currentLevel;
+    public Level CurrentLevel;
     [SerializeField] private int _currentLevelID;
 
     public override void Init(GameManager gameManager)
@@ -16,35 +12,33 @@ public class LevelManager : CustomBehaviour
         base.Init(gameManager);
 
         _gameManager.Events.OnLevelStarted += LoadLevel;
+        _gameManager.Events.OnLevelCompleted += ClearLevel;
+        _gameManager.Events.OnLevelFailed += ClearLevel;
+
     }
 
     private void OnDestroy()
     {
         _gameManager.Events.OnLevelStarted -= LoadLevel;
+        _gameManager.Events.OnLevelCompleted -= ClearLevel;
+        _gameManager.Events.OnLevelFailed -= ClearLevel;
+    }
+
+    private void ClearLevel()
+    {
+        Destroy(CurrentLevel.gameObject);
+        CurrentLevel = null;
     }
 
     private void LoadLevel(int levelID)
     {
         _currentLevelID = levelID;
 
-        if (transform.childCount > 0)
-            Destroy(transform.GetChild(0).gameObject);
-
         GameObject go = Instantiate(_levelPrefabs[levelID], Vector3.zero, Quaternion.identity);
-        _currentLevel = go.GetComponent<Level>();
-        _currentLevel.Init(_gameManager);
+        CurrentLevel = go.GetComponent<Level>();
+        CurrentLevel.Init(_gameManager);
 
         _gameManager.Events.LevelLoaded();
-    }
-
-    public void Pause()
-    {
-        _currentLevel.Pause();
-    }
-
-    public void Resume()
-    {
-        _currentLevel.Resume();
     }
 
     public void PlayAgain()
@@ -61,6 +55,7 @@ public class LevelManager : CustomBehaviour
         _gameManager.Events.StartLevel(_currentLevelID);
     }
 
+    /*
     public void AddAgent(CustomAgent agent)
     {
         _currentLevel.Agents.Add(agent);
@@ -71,4 +66,5 @@ public class LevelManager : CustomBehaviour
         if (_currentLevel.Agents.Contains(agent))
             _currentLevel.Agents.Remove(agent);
     }
+    */
 }

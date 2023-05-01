@@ -10,26 +10,16 @@ public class CreditsPanel : UIPanel
         base.Init(gameManager);
 
         _gameManager.Events.OnCreditsShown += ShowPanel;
-        _gameManager.Events.OnCreditsHide += HidePanel;
     }
 
     private void OnDestroy()
     {
         _gameManager.Events.OnCreditsShown -= ShowPanel;
-        _gameManager.Events.OnCreditsHide -= HidePanel;
     }
 
     public void Close()
     {
-        _gameManager.Events.HideCredits();
+        HidePanel();
     }
-    /*
-    private void Update()
-    {
-        if (Input.anyKeyDown)
-        {
-            Close();
-        }
-    }
-    */
+
 }
