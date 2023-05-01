@@ -19,12 +19,51 @@ public class StorkController : CustomAgent
 
     [SerializeField] private float _cameraToPlayerDistance;
 
+    [SerializeField] private int _maxHealth;
+    public int MaxHealth
+    {
+        get
+        {
+            return _maxHealth;
+        }
+    }
+
+    [SerializeField] private int _currentHealth;
+    public int CurrentHealth
+    {
+        get
+        {
+            return _currentHealth;
+        }
+    }
+    [SerializeField] private int _armor;
+    public int Armor
+    {
+        get
+        {
+            return _armor;
+        }
+    }
+    [SerializeField] private int _speed;
+    public int Speed
+    {
+        get
+        {
+            return _speed;
+        }
+    }
+
+    [SerializeField] private float _speedFactor;
+
 
     public override void Init(GameManager gameManager)
     {
         base.Init(gameManager);
 
         _gameManager.Events.OnLevelLoaded += ResetPlayer;
+        _gameManager.Events.OnPlayerHit += GotHit;
+        _gameManager.Events.OnNewGameStarted += ResetStats;
+        _gameManager.Events.OnGainSkill += GainSkill;
         
         if (_lineRenderer == null)
             _lineRenderer = GetComponent<LineRenderer>();
@@ -35,14 +74,45 @@ public class StorkController : CustomAgent
 
     private void OnDestroy()
     {
+        DeInit();
         _gameManager.Events.OnLevelLoaded -= ResetPlayer;
+        _gameManager.Events.OnPlayerHit -= GotHit;
+        _gameManager.Events.OnNewGameStarted -= ResetStats;
+        _gameManager.Events.OnGainSkill -= GainSkill;
+    }
+
+    private void GainSkill(int skillID)
+    {
+        if (skillID == 0) // health
+        {
+            _maxHealth += 5;
+        }
+        else if (skillID == 1) // armor
+        {
+            _armor += 1;
+        }
+        else if (skillID == 2) // speed
+        {
+            _speed += 1;
+        }
+
+        _gameManager.Events.UpdatePlayerStats();
+    }
+
+    private void ResetStats()
+    {
+        _maxHealth = 50;
+        _currentHealth = _maxHealth;
+        _armor = 0;
+        _speed = 0;
+        _speedFactor = 1f + (0.1f * _speed);
     }
 
     private void FixedUpdate()
     {
         if (!_isMoving) return;
 
-        _rigidbody.velocity = transform.forward * _moveSpeed * Time.fixedDeltaTime;
+        _rigidbody.velocity = transform.forward * _moveSpeed * Time.fixedDeltaTime * _speedFactor;
         if (!_isTurning)
         {
             _rigidbody.angularVelocity = Vector3.zero;
@@ -57,7 +127,7 @@ public class StorkController : CustomAgent
             {
                 _isTurning = false;
             }
-            _rigidbody.angularVelocity = Vector3.up * _rotateAmount * (_turnSpeed * Time.fixedDeltaTime);
+            _rigidbody.angularVelocity = Vector3.up * _rotateAmount * (_turnSpeed * Time.fixedDeltaTime * _speedFactor);
         }
                 
     }
@@ -138,5 +208,16 @@ public class StorkController : CustomAgent
         Pause();
 
     }
+
+    private void GotHit(int damage)
+    {
+        float dmgReduction = 0.1f * _armor;
+        _currentHealth -= Mathf.Max((damage * _armor), 1);
+        _gameManager.Events.UpdatePlayerStats();
+
+        if (_currentHealth < 0)
+            _gameManager.Events.KillPlayer();
+    }
+
 
 }

@@ -23,4 +23,13 @@ public class CreditsPanel : UIPanel
     {
         _gameManager.Events.HideCredits();
     }
+    /*
+    private void Update()
+    {
+        if (Input.anyKeyDown)
+        {
+            Close();
+        }
+    }
+    */
 }

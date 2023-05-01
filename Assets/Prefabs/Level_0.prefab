@@ -312,7 +312,7 @@ MonoBehaviour:
   _isMoving: 0
   _target: {fileID: 0}
   _turnSpeed: 50
-  _fireRate: 3
+  _fireRate: 2
   _fireTimer: 0
   Muzzle: {fileID: 1849289866754343093}
   _bulletPrefab: {fileID: 1119592603904599020, guid: 8f109c4204daf2b49890a1d1666add92, type: 3}
@@ -1228,7 +1228,7 @@ MonoBehaviour:
   _isMoving: 0
   _target: {fileID: 0}
   _turnSpeed: 50
-  _fireRate: 3
+  _fireRate: 2
   _fireTimer: 0
   Muzzle: {fileID: 1849289866082788931}
   _bulletPrefab: {fileID: 1119592603904599020, guid: 8f109c4204daf2b49890a1d1666add92, type: 3}
@@ -2417,7 +2417,7 @@ MonoBehaviour:
   _isMoving: 0
   _target: {fileID: 0}
   _turnSpeed: 50
-  _fireRate: 3
+  _fireRate: 2
   _fireTimer: 0
   Muzzle: {fileID: 1849289865379798397}
   _bulletPrefab: {fileID: 1119592603904599020, guid: 8f109c4204daf2b49890a1d1666add92, type: 3}

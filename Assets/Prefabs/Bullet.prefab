@@ -132,4 +132,5 @@ MonoBehaviour:
   _animator: {fileID: 0}
   _camera: {fileID: 0}
   _isMoving: 0
-  _speed: 20
+  _speed: 40
+  _damage: 15

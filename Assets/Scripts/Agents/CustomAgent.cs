@@ -19,6 +19,20 @@ public class CustomAgent : CustomBehaviour
         base.Init(gameManager);
 
         UpdateComponents();
+
+        _gameManager.Events.OnGamePaused += Pause;
+        _gameManager.Events.OnGameResumed += Resume;
+    }
+
+    public virtual void DeInit()
+    {
+        _gameManager.Events.OnGamePaused -= Pause;
+        _gameManager.Events.OnGameResumed -= Resume;
+    }
+
+    private void OnDestroy()
+    {
+        DeInit();
     }
 
     public virtual void UpdateComponents()

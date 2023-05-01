@@ -14,7 +14,7 @@ public class LevelCompletePanel : UIPanel
 
     public void NextLevel()
     {
-        _gameManager.Levels.PlayNextLevel();
+        _gameManager.Events.ShowUpgradePanel();
         HidePanel();
     }
 }

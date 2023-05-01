@@ -5,6 +5,7 @@ using UnityEngine;
 public class BulletAgent : CustomAgent
 {
     [SerializeField] private float _speed;
+    [SerializeField] private int _damage;
 
     public override void Init(GameManager gameManager)
     {
@@ -32,14 +33,15 @@ public class BulletAgent : CustomAgent
         ObjectPool.Instance.BulletPool.Release(this);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.transform.tag == "Player")
+        if (other.tag == "Player")
         {
-            _gameManager.Events.HitPlayer();
+            _gameManager.Events.HitPlayer(_damage);
+            ResetMe();
         }
 
-        ResetMe();
     }
+
 
 }

@@ -27,4 +27,9 @@ public class MainMenu : UIPanel
     {
         _gameManager.Events.StartNewGame();
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }

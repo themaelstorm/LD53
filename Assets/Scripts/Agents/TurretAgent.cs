@@ -12,8 +12,9 @@ public class TurretAgent : CustomAgent
     [SerializeField] private float _fireTimer;
 
     [SerializeField] private Transform Muzzle;
-
     [SerializeField] private GameObject _bulletPrefab;
+
+
     private void Update()
     {
         if (!_isMoving) return;

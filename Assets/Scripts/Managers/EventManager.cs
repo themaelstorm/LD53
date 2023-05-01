@@ -9,11 +9,17 @@ public class EventManager : CustomBehaviour
     public event Action OnGameStarted;
     public event Action OnGameFinished;
 
+    public event Action OnGamePaused;
+    public event Action OnGameResumed;
+
     public event Action OnCreditsShown;
     public event Action OnCreditsHide;
 
     public event Action OnInstructionsShown;
     public event Action OnInstructionsHide;
+
+    public event Action OnUpgradePanelShown;
+    public event Action OnUpgradePanelHide;
 
     public event Action OnNewGameStarted;
     public event Action OnLevelLoaded;
@@ -21,7 +27,7 @@ public class EventManager : CustomBehaviour
     public event Action OnLevelCompleted;
     public event Action OnLevelFailed;
 
-    public event Action OnPlayerHit;
+    public event Action<int> OnPlayerHit;
     public event Action OnPlayerKilled;
     public event Action OnBabyDelivered;
     public event Action<int> OnUseSkill;
@@ -30,6 +36,8 @@ public class EventManager : CustomBehaviour
     public event Action OnUpgradeSpeed;
     public event Action OnUpgradeArmor;
     public event Action<int> OnGainSkill;
+
+    public event Action OnPlayerStatsChanged;
 
 
     public void StartGame()
@@ -40,6 +48,16 @@ public class EventManager : CustomBehaviour
     public void FinishGame()
     {
         OnGameFinished?.Invoke();
+    }
+
+    public void PauseGame()
+    {
+        OnGamePaused?.Invoke();
+    }
+
+    public void ResumeGame()
+    {
+        OnGameResumed?.Invoke();
     }
 
     public void ShowCredits()
@@ -87,9 +105,9 @@ public class EventManager : CustomBehaviour
         OnLevelFailed?.Invoke();
     }
 
-    public void HitPlayer()
+    public void HitPlayer(int damage)
     {
-        OnPlayerHit?.Invoke();
+        OnPlayerHit?.Invoke(damage);
     }
 
     public void KillPlayer()
@@ -127,4 +145,18 @@ public class EventManager : CustomBehaviour
         OnGainSkill?.Invoke(skillID);
     }
 
+    public void ShowUpgradePanel()
+    {
+        OnUpgradePanelShown?.Invoke();  
+    }
+
+    public void HideUpgradePanel()
+    {
+        OnUpgradePanelHide?.Invoke();
+    }
+
+    public void UpdatePlayerStats()
+    {
+        OnPlayerStatsChanged?.Invoke();
+    }
 }
